@@ -163,7 +163,8 @@ perfRun.useProfile(
 
 (TestRunner.java uses this algorithm.)
 
-The request rate r is given by,
+A ramp function is a linear increase or decrease of request rate over time.
+The request rate r as a function of time t is therefore given by,
 
 <blockquote>
 r = a t + c
