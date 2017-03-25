@@ -164,21 +164,21 @@ perfRun.useProfile(
 (TestRunner.java uses this algorithm.)
 
 The request rate r = a t + c, where a is a constant, t is the time, and c is a
-constant (see [Hazard Function](#hazard-function) below).
+constant.
 
 ## Inverse cumulative distribution function (ICDF, also represented as F<sup>-1</sup>)
 
 Given,
 
-<blockquote>
-a is the rate at which requests increase (i.e., the slope of the ramp function).
+<dl>
+<dd>a is the rate at which requests increase (i.e., the slope of the ramp function).</dd>
 
-cp is the cumulative probability that a request will have occurred before time t:
+<dd>cp is the cumulative probability that a request will have occurred before time t:
 the value of cp should be chosen using a random variable with uniform distribution
-between 0 and 1.
+between 0 and 1.</dd>
 
-c is the request rate at t=0.
-</blockquote>
+<dd>c is the request rate at t=0.</dd>
+</dl>
 
 From the [Hazard Function](#hazard-function),
 
