@@ -240,7 +240,7 @@ t = [-c + √(c<sup>2</sup> - 2a ln(1-F))] / a
 By the [probability integral transform theorem](https://en.wikipedia.org/wiki/Probability_integral_transform),
 we can then write a generator for the distribution of <b>request times</b>,
 
-</blockquote>
+<blockquote>
 F<sup>-1</sup> = [-c + √ c2 - 2a ln(1-cp)] / a
 </blockquote>
 
