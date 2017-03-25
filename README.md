@@ -161,13 +161,16 @@ perfRun.useProfile(
 ```
 # Ramp Function Algorithm
 
-TestRunner.java uses this algorithm.
+(TestRunner.java uses this algorithm.)
 
 The request rate r = a t + c, where a is a constant, t is the time, and c is a
 constant (see [Hazard Function](#hazard-function) below).
 
 ## Inverse cumulative distribution function (ICDF, also represented as F<sup>-1</sup>)
 
+Given,
+
+<blockquote>
 a is the rate at which requests increase (i.e., the slope of the ramp function).
 
 cp is the cumulative probability that a request will have occurred before time t:
@@ -175,21 +178,19 @@ the value of cp should be chosen using a random variable with uniform distributi
 between 0 and 1.
 
 c is the request rate at t=0.
+</blockquote>
+
+From the [Hazard Function](#hazard-function),
+
+<blockquote>
+F<sup>-1</sup> = [ -c + √(c<sup>2</sup> - 2a ln(1-cp)) ] / a
+</blockquote>
 
 If a = 0,
 
 <blockquote>
 F<sup>-1</sup> = - [ ln(1-cp) ] / c
 </blockquote>
-
-otherwise,
-
-<blockquote>
-F<sup>-1</sup> = [ -c + √(c<sup>2</sup> - 2a ln(1-cp)) ] / a
-</blockquote>
-
-(See [Hazard Function](#hazard-function) below.)
-
 
 If a < 0 then there is a range in which F is undefined: at any time t, if the
 request rate is r (= a t + c), generate a random number for cp, between 0 and 1,
