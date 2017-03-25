@@ -165,7 +165,7 @@ TestRunner.java uses this algorithm.
 
 The request rate r = a t + c, where a is a constant, t is the time, and c is a constant (see “Hazard Function”).
 
-## Inverse cumulative distribution function (ICDF, also represented as F-1)
+## Inverse cumulative distribution function (ICDF, also represented as F<sup>-1</sup>)
 
 a is the rate at which requests increase (i.e., the slope of the ramp function).
 
@@ -191,6 +191,6 @@ and compute:
 f<sub>0</sub> = 1 - exp(-a t<sup>2</sup>/2 - r t)
 
 
-If a < 0 and cp > f0, then the ICDF is imaginary: the predicted request then occurs
+If a < 0 and cp > f<sub>0</sub>, then the ICDF is imaginary: the predicted request then occurs
 after where the ramp goes to zero, so exit the ramp. Otherwise, the time to the next
-request is F-1(a, c, cp).
+request is F<sup>-1</sup>(a, c, cp).
