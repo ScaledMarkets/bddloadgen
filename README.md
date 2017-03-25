@@ -1,5 +1,9 @@
 # bddloadgen
 
+## Project Status
+
+Under active development.
+
 ## What the Load Generator Is For
 There are two uses:
 
@@ -10,8 +14,7 @@ in order to execute them more rapidly.
 ## What Are the Distinguishing Features?
 Refer to the figure below.
 
-Figure: Overall setup.
-
+![Figure 1: Overall setup](BDDLoadgen_Overall_Setup.png "Figure 1: Overall setup")
 
 1. Performance test scenarios are defined in [Gherkin](https://github.com/cucumber/cucumber/wiki/Gherkin).
 As such, performance test
