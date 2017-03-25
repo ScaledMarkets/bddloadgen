@@ -13,7 +13,7 @@ Refer to the figure below.
 Figure: Overall setup.
 
 
-1. Performance test scenarios are defined in [Gherkin](http://cukes.info/gherkin.html).
+1. Performance test scenarios are defined in [Gherkin](https://github.com/cucumber/cucumber/wiki/Gherkin).
 As such, performance test
 scenarios are fully scriptable. There is no “user interface”. A performance test
 scenario is executed by invoking it under [JBehave](http://jbehave.org/).
