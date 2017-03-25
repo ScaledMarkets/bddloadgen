@@ -1,0 +1,27 @@
+# Encoding: utf-8
+
+require 'rubygems'
+require 'cucumber'
+require 'cucumber/rake/task'
+
+task default: [:endToEndTests]
+
+task :endToEndTests do |t|
+    puts "Running all tests"
+
+    Cucumber::Rake::Task.new(:selectedTests) do |t|
+        t.cucumber_opts = 'features'
+    end
+
+end
+
+task :selectedTests, [:cucumberOptStr, :featureList] do |t, args|
+    puts "Running selectedTests: args=#{args}"
+
+    Cucumber::Rake::Task.new(:selectedTests) do |t|
+        puts "args=#{args}"
+        t.cucumber_opts = args[:cucumberOptStr] + ' ' + args[:featureList]
+    end
+
+end
+

@@ -1,0 +1,6 @@
+Adding a new provider:
+
+1. Create a Vagrantfile template, and name it <providername>.vagrantfile.template.
+2. Create a chef recipe template, and name it <providername>.recipe.template.
+3. Add the new provider to SupportedProviders.rb.
+

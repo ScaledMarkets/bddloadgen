@@ -1,0 +1,63 @@
+BIN_RESOURCES
+
+yum_package "git" do
+  action :install
+end
+
+directory "create_Project_dir" do
+    path "/var/Project"
+    owner ENV['USERNAME']
+    #group "vagrant"
+    mode 00777
+    action :create
+end
+
+directory "GEN_NODE_RESULTS_DIR" do
+    owner ENV['USERNAME']  # "vagrant"
+    mode 00777
+    #group "vagrant"
+    action :create
+end
+
+directory "GEN_NODE_RESOURCES_DIR" do
+    owner ENV['USERNAME']  # "vagrant"
+    #group "vagrant"
+    mode 00777
+    action :create
+end
+
+execute "make_netrc_for_git" do
+    command "echo BACKSLASH"machine PROJECT_REPO_FQND login GIT_USERID password GIT_PASSWORDBACKSLASH" > HASHSIGN{ENV['HOME']}/.netrc; chown HASHSIGN{ENV['USER']} HASHSIGN{ENV['HOME']}/.netrc"
+end
+
+remote_file transfer_jbehave do
+	source "http://central.maven.org/maven2/org/jbehave/jbehave-core/3.9.5/jbehave-core-3.9.5.jar"
+	path "/var/Standard/jbehave.jar"
+    mode "0755"
+end
+
+remote_file "get_testrunner_jar" do
+	source "LOADGEN_JAR_URL"  # from local maven repo
+	path "/var/Standards/loadgen.jar"
+	mode "0755"
+end
+
+remote_file "get_step_jar" do
+	source "STEPS_JAR_URL"   # from local maven repo
+	path "GEN_NODE_STEP_JARPATH"
+	mode "0755"
+end
+
+# Transfer profiles.
+PROFILES
+
+# Transfer control script.
+file "GEN_NODE_RESOURCES_DIR/testrunner.sh" do
+    owner ENV['USERNAME']  # "vagrant"
+    #group "vagrant"
+    mode "0755"
+    action :create
+    content CONTROL_SCRIPT_CONTENT
+end
+
+
