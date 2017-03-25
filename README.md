@@ -163,8 +163,13 @@ perfRun.useProfile(
 
 (TestRunner.java uses this algorithm.)
 
-The request rate r = a t + c, where a is a constant, t is the time, and c is a
-constant.
+The request rate r is given by,
+
+<blockquote>
+r = a t + c
+</blockquote>
+
+where a is a constant, t is the time, and c is a constant.
 
 ## Inverse cumulative distribution function (ICDF, also represented as F<sup>-1</sup>)
 
