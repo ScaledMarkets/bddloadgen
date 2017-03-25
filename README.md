@@ -177,7 +177,7 @@ where a is a constant, t is the time, and c is a constant.
 An inverse cumulative distribution function (ICDF), aka
 [quantile function](https://en.wikipedia.org/wiki/Quantile_function),
 typically represented as F<sup>-1</sup>, is the value at which the probability
-of the random variable is less than or equal to a given probability.
+of a random variable is less than or equal to a given probability.
 
 Given,
 
@@ -246,7 +246,7 @@ a random number generator). We can rearrange this as,
 a t<sup>2</sup>/2 + c t + ln(1 - F) = 0
 </blockquote>
 
-which is a quadratic equation, so we can solve for t:
+If a ≠ 0, this is a quadratic equation, so we can solve for t:
 
 <blockquote>
 t = [-c + √(c<sup>2</sup> - 2a ln(1-F))] / a
