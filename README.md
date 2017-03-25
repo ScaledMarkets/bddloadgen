@@ -236,10 +236,13 @@ t = [-c + √(c<sup>2</sup> - 2a ln(1-F))] / a
 </blockquote>
 
 (We are only interested in positive solutions)
-t = 
-a
-By the probability integral transform theorem, we can then write a generator for the distribution of request times,
--c + √ c2 - 2a ln(1-cp)
-F-1 = 
+
+By the [probability integral transform theorem](https://en.wikipedia.org/wiki/Probability_integral_transform),
+we can then write a generator for the distribution of <b>request times</b>,
+
+</blockquote>
+F<sup>-1</sup> = [-c + √ c2 - 2a ln(1-cp)] / a
+</blockquote>
+
 where cp is a random number between (0, 1).
 a
