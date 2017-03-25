@@ -172,7 +172,12 @@ r = a t + c
 
 where a is a constant, t is the time, and c is a constant.
 
-## Inverse cumulative distribution function (ICDF, also represented as F<sup>-1</sup>)
+## Inverse cumulative distribution function
+
+An inverse cumulative distribution function (ICDF), aka
+[quantile function](https://en.wikipedia.org/wiki/Quantile_function),
+typically represented as F<sup>-1</sup>, is the value at which the probability
+of the random variable is less than or equal to a given probability.
 
 Given,
 
