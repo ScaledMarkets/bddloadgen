@@ -133,4 +133,72 @@ perfRun.useProfile(
 
 ## Retrieve results
 
+# Test Node File System Artifacts
 
+## JAR file structure
+
+```
+/loadgen
+    /controller
+           /templates
+/testrunner
+    TestRunner.class
+/demo
+```
+
+## File structure on each Test Node
+
+```
+/var
+    /Project
+        /features/*.feature
+        steps.jar     (a JAR that contains the step classes)
+        <profiles>
+    /Standard
+        testrunner.sh
+        jbehave.jar
+        loadgen.jar (contains package “testrunner”)
+```
+# Ramp Function Algorithm
+
+TestRunner.java uses this algorithm.
+
+The request rate r = a t + c, where a is a constant, t is the time, and c is a constant (see “Hazard Function”).
+
+## Inverse cumulative distribution function (ICDF, also represented as F-1)
+
+a is the rate at which requests increase (i.e., the slope of the ramp function).
+
+cp is the cumulative probability that a request will have occurred before time t: the value of cp should be chosen using a random variable with uniform distribution between 0 and 1.
+
+c is the request rate at t=0.
+
+If a = 0,
+
+- ln(1-cp)
+F-1 = 
+c
+
+otherwise,
+
+-c + √ c2 - 2a ln(1-cp)
+
+(See “Hazard Function” slide.)
+
+F-1 = 
+a
+
+If a < 0 then there is a range in which F is undefined: at any time t, if the
+request rate is r (= a t + c), generate a random number for cp, between 0 and 1,
+and compute:
+)
+(
+a t2
+-
+- r t
+2
+f0 = 1 - e
+
+If a < 0 and cp > f0, then the ICDF is imaginary: the predicted request then occurs
+after where the ramp goes to zero, so exit the ramp. Otherwise, the time to the next
+request is F-1(a, c, cp).
