@@ -163,13 +163,16 @@ perfRun.useProfile(
 
 TestRunner.java uses this algorithm.
 
-The request rate r = a t + c, where a is a constant, t is the time, and c is a constant (see “Hazard Function”).
+The request rate r = a t + c, where a is a constant, t is the time, and c is a
+constant (see “Hazard Function” below).
 
 ## Inverse cumulative distribution function (ICDF, also represented as F<sup>-1</sup>)
 
 a is the rate at which requests increase (i.e., the slope of the ramp function).
 
-cp is the cumulative probability that a request will have occurred before time t: the value of cp should be chosen using a random variable with uniform distribution between 0 and 1.
+cp is the cumulative probability that a request will have occurred before time t:
+the value of cp should be chosen using a random variable with uniform distribution
+between 0 and 1.
 
 c is the request rate at t=0.
 
@@ -185,7 +188,7 @@ otherwise,
 F<sup>-1</sup> = [ -c + √(c<sup>2</sup> - 2a ln(1-cp)) ] / a
 </blockquote>
 
-(See “Hazard Function” slide.)
+(See “Hazard Function” below.)
 
 
 If a < 0 then there is a range in which F is undefined: at any time t, if the
@@ -199,3 +202,62 @@ f<sub>0</sub> = 1 - exp(-a t<sup>2</sup>/2 - r t)
 If a < 0 and cp > f<sub>0</sub>, then the ICDF is imaginary: the predicted request then occurs
 after where the ramp goes to zero, so exit the ramp. Otherwise, the time to the next
 request is F<sup>-1</sup>(a, c, cp).
+
+# Hazard Function
+
+TestRunner.java uses this.
+
+The request rate r = a t + c, where a is a constant, t is the time (t ≥ 0), and
+c is a constant (c ≥ 0).
+
+The cumulative distribution function F is given by
+
+<blockquote>
+(see <a href="http://data.princeton.edu/wws509/notes/c7.pdf">
+http://data.princeton.edu/wws509/notes/c7.pdf</a>
+
+1 - F(t) = exp[-∫<sub>0</sub><sup>t</sup>(a x + c)dx]
+
+t
+a
+
+-
+- c t)
+( a x + c ) dx
+(-
+t2
+2
+0
+
+s.t. a t + c ≥ 0, a ≠ 0. If a < 0, then F is undefined in <1-exp(
+e
+t
+a
+- c t
+), 1>
+
+ln (1 - F(t)) = 
+
+∫
+-
+=
+-
+t2
+( a x + c ) dx
+2
+0
+</blockquote>
+
+We want to be able to solve for t, given a value of F (which we will pick using a random number generator). We can rearrange this as,
+a
+t2 + c t + ln(1 - F) = 0        which is a quadratic equation, so we can solve for t:
+2
+-c + √ c2 - 2a ln(1-F)
+(We are only interested in positive solutions)
+t = 
+a
+By the probability integral transform theorem, we can then write a generator for the distribution of request times,
+-c + √ c2 - 2a ln(1-cp)
+F-1 = 
+where cp is a random number between (0, 1).
+a
