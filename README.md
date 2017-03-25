@@ -219,9 +219,12 @@ http://data.princeton.edu/wws509/notes/c7.pdf</a>
 1 - F(t) = exp[-∫<sub>0</sub><sup>t</sup>(a x + c)dx]
 
 s.t. a t + c ≥ 0, a ≠ 0. If a < 0, then F is undefined in <1-exp(-a t<sup>2</sup>/2 - c t), 1>
+</blockquote>
 
+Thus,
+
+<blockquote>
 ln(1 - F(t)) = ∫<sub>0</sub><sup>t</sup>(a x + c)dx = - a t<sup>2</sup>/2 - c t
-
 </blockquote>
 
 We want to be able to solve for t, given a value of F (which we will pick using
