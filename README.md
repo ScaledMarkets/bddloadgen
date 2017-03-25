@@ -175,11 +175,15 @@ c is the request rate at t=0.
 
 If a = 0,
 
+<blockquote>
 F<sup>-1</sup> = - [ ln(1-cp) ] / c
+</blockquote>
 
 otherwise,
 
+<blockquote>
 F<sup>-1</sup> = [ -c + √(c<sup>2</sup> - 2a ln(1-cp)) ] / a
+</blockquote>
 
 (See “Hazard Function” slide.)
 
