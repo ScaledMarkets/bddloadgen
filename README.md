@@ -245,4 +245,4 @@ F<sup>-1</sup> = [-c + √(c2 - 2a ln(1-cp))] / a
 </blockquote>
 
 where cp is a random number between (0, 1).
-a
+
