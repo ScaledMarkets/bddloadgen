@@ -187,13 +187,9 @@ F<sup>-1</sup> = [ -c + √(c<sup>2</sup> - 2a ln(1-cp)) ] / a
 If a < 0 then there is a range in which F is undefined: at any time t, if the
 request rate is r (= a t + c), generate a random number for cp, between 0 and 1,
 and compute:
-)
-(
-a t2
--
-- r t
-2
-f0 = 1 - e
+
+f<sub>0</sub> = 1 - exp(-a t<sup>2</sup>/2 - r t)
+
 
 If a < 0 and cp > f0, then the ICDF is imaginary: the predicted request then occurs
 after where the ramp goes to zero, so exit the ramp. Otherwise, the time to the next
