@@ -220,16 +220,21 @@ http://data.princeton.edu/wws509/notes/c7.pdf</a>
 
 s.t. a t + c ≥ 0, a ≠ 0. If a < 0, then F is undefined in <1-exp(-a t<sup>2</sup>/2 - c t), 1>
 
-
-
-
 </blockquote>
 
-We want to be able to solve for t, given a value of F (which we will pick using a random number generator). We can rearrange this as,
-a
-t2 + c t + ln(1 - F) = 0        which is a quadratic equation, so we can solve for t:
-2
--c + √ c2 - 2a ln(1-F)
+We want to be able to solve for t, given a value of F (which we will pick using
+a random number generator). We can rearrange this as,
+
+<blockquote>
+a t<sup>2</sup>/2 + c t + ln(1 - F) = 0
+</blockquote>
+
+which is a quadratic equation, so we can solve for t:
+
+<blockquote>
+t = [-c + √(c<sup>2</sup> - 2a ln(1-F))] / a
+</blockquote>
+
 (We are only interested in positive solutions)
 t = 
 a
