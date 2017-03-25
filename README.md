@@ -185,7 +185,7 @@ otherwise,
 
 (See “Hazard Function” slide.)
 
-F-1 = 
+F<sup>-1</sup> = 
 a
 
 If a < 0 then there is a range in which F is undefined: at any time t, if the
