@@ -206,7 +206,7 @@ request is F<sup>-1</sup>(a, c, cp).
 
 # Hazard Function
 
-TestRunner.java uses this.
+(The ramp function algorithm uses this.)
 
 The request rate r = a t + c, where a is a constant, t is the time (t ≥ 0), and
 c is a constant (c ≥ 0).
