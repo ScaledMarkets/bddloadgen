@@ -164,7 +164,7 @@ perfRun.useProfile(
 TestRunner.java uses this algorithm.
 
 The request rate r = a t + c, where a is a constant, t is the time, and c is a
-constant (see “Hazard Function” below).
+constant (see [Hazard Function](#hazard-function) below).
 
 ## Inverse cumulative distribution function (ICDF, also represented as F<sup>-1</sup>)
 
@@ -188,7 +188,7 @@ otherwise,
 F<sup>-1</sup> = [ -c + √(c<sup>2</sup> - 2a ln(1-cp)) ] / a
 </blockquote>
 
-(See “Hazard Function” below.)
+(See [Hazard Function](#hazard-function) below.)
 
 
 If a < 0 then there is a range in which F is undefined: at any time t, if the
