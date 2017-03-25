@@ -218,34 +218,11 @@ http://data.princeton.edu/wws509/notes/c7.pdf</a>
 
 1 - F(t) = exp[-∫<sub>0</sub><sup>t</sup>(a x + c)dx]
 
-t
-a
+s.t. a t + c ≥ 0, a ≠ 0. If a < 0, then F is undefined in <1-exp(-a t<sup>2</sup>/2 - c t), 1>
 
--
-- c t)
-( a x + c ) dx
-(-
-t2
-2
-0
 
-s.t. a t + c ≥ 0, a ≠ 0. If a < 0, then F is undefined in <1-exp(
-e
-t
-a
-- c t
-), 1>
 
-ln (1 - F(t)) = 
 
-∫
--
-=
--
-t2
-( a x + c ) dx
-2
-0
 </blockquote>
 
 We want to be able to solve for t, given a value of F (which we will pick using a random number generator). We can rearrange this as,
