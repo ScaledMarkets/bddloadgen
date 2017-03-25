@@ -175,18 +175,14 @@ c is the request rate at t=0.
 
 If a = 0,
 
-- ln(1-cp)
-F-1 = 
-c
+F<sup>-1</sup> = - [ ln(1-cp) ] / c
 
 otherwise,
 
--c + √ c2 - 2a ln(1-cp)
+F<sup>-1</sup> = [ -c + √(c<sup>2</sup> - 2a ln(1-cp)) ] / a
 
 (See “Hazard Function” slide.)
 
-F<sup>-1</sup> = 
-a
 
 If a < 0 then there is a range in which F is undefined: at any time t, if the
 request rate is r (= a t + c), generate a random number for cp, between 0 and 1,
