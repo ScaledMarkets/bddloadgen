@@ -164,11 +164,35 @@ perfRun.useProfile(
 (TestRunner.java uses this algorithm.)
 
 A ramp function is a linear increase or decrease of request rate over time.
-The request rate r as a function of time t is therefore given by,
+The test nodes of BDDLoadgen generate load requests according to a statistical
+distribution, which is determined by the ramp functions that are defined by the user.
+In order to generate requests according to the correct
+statistical distribution, it is therefore necessary to compute the statistical
+distribution function. This is a little bit complex, because the event rate
+is not constant, which means that we must
+calculate a probability distribution for a non-constant event rate.
+
+In addition, the user can specify a set of ramp functions which are joined together,
+forming a composite function that is continuous but that has instantaneous changes
+in slope. For example, the user might specify that the request rate should start
+at zero, and gradually increase to 100 requests/sec over a period of two minutes,
+then remain constant, and then incease rapidly to 300 requests/sec over ten seconds,
+remain there for 60 seconds, and then drop back down to 100/sec over 60 seconds,
+and then remain constant at 100/sec for the remainder of the test. This means that
+when BDDLoadgen decides when the next event will be,
+it must take into account these slope discontinuities.
+
+## Ramp function
+
+For a single unbounded ramp function, the request rate r as a function of time t is 
+herefore given by,
 
 <blockquote>
 r = a t + c
 </blockquote>
+
+We need to consider ramp functions that begin at t=0 and end at a point in the future,
+with r always positive.
 
 where a is a constant, t is the time, and c is a constant.
 
