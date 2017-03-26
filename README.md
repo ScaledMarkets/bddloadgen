@@ -168,8 +168,8 @@ The test nodes of BDDLoadgen generate load requests according to a statistical
 distribution, which is determined by the ramp functions that are defined by the user.
 In order to generate requests according to the correct
 statistical distribution, it is therefore necessary to compute the statistical
-distribution function. This is a little bit complex, because the event rate--being
-a ramp function--is not constant, which means that we must
+distribution function. This is a little bit complex, because the event rate—being
+a ramp function—is not constant, which means that we must
 calculate a probability distribution for a non-constant event rate.
 
 In addition, the user can specify a set of ramp functions which are joined together,
