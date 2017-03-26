@@ -191,7 +191,7 @@ between 0 and 1.</dd>
 <dd>c is the request rate at t=0.</dd>
 </dl>
 
-From the [Hazard Function](#hazard-function),
+From the [Hazard Function](#hazard-function), if a ≠ 0,
 
 <blockquote>
 F<sup>-1</sup> = [ -c + √(c<sup>2</sup> - 2a ln(1-cp)) ] / a
