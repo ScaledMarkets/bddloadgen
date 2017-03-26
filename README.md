@@ -191,10 +191,10 @@ herefore given by,
 r = a t + c
 </blockquote>
 
+where a is a constant, t is the time, and c is a constant.
+
 We need to consider ramp functions that begin at t=0 and end at a point in the future,
 with r always positive.
-
-where a is a constant, t is the time, and c is a constant.
 
 ## Inverse cumulative distribution function
 
