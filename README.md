@@ -198,10 +198,14 @@ with r always positive.
 
 ## Inverse cumulative distribution function
 
+Consider a random variable x.
 An inverse cumulative distribution function (ICDF), aka
 [quantile function](https://en.wikipedia.org/wiki/Quantile_function),
-typically represented as F<sup>-1</sup>, is the value at which the probability
-of a random variable is less than or equal to a given probability.
+typically represented as F<sup>-1</sup>(p), where p is the probability,
+is the value of the variable x at which 100p% of the values of x are below
+the value.
+For example, if for a probability of .9 (i.e., 90%), F<sup>-1</sup> is, the value
+of x is 3, it means that 90% of the values of values of x are 3 or less.
 
 Given,
 
