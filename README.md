@@ -207,6 +207,21 @@ the value.
 For example, if for a probability of .9 (i.e., 90%), F<sup>-1</sup>
 is 3, it means that 90% of the values of values of x are 3 or less.
 
+Why do we care? Well it turns out, by the
+[probability integral transform theorem](https://en.wikipedia.org/wiki/Probability_integral_transform),
+we can then write a generator for the distribution of <b>request times</b>,
+
+<blockquote>
+t<sub>next request</sub> = F<sup>-1</sup>(<i>random-number</i>)
+</blockquote>
+
+where <i>random-number</i> is a random number that we generate using a random
+number generator.
+
+We therefore need to compute a formula for F<sup>-1</sup> for ramp functions:
+once we have that, we have a way to generate request times according to a request
+rate that is a ramp function.
+
 Given,
 
 <dl>
