@@ -255,7 +255,8 @@ f<sub>0</sub> = 1 - exp(-a t<sup>2</sup>/2 - r t)
 </blockquote>
 
 If a < 0 and cp > f<sub>0</sub>, then the ICDF is imaginary: the predicted request then occurs
-after where the ramp goes to zero, so exit the ramp. Otherwise, the time to the next
+after where the ramp goes to zero, so exit the ramp (the next event will be
+governed by the next ramp). Otherwise, the time to the next
 request is F<sup>-1</sup>(a, c, cp).
 
 # Hazard Function
