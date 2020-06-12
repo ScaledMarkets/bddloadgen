@@ -1,5 +1,9 @@
 # bddloadgen
 
+## Github Location
+
+https://github.com/cliffbdf/bddloadgen
+
 ## Project Status
 
 Under active development.
@@ -184,7 +188,7 @@ it must take into account these slope discontinuities.
 
 ## Ramp function
 
-For a single unbounded ramp function, the request rate r as a function of time t is 
+For a single unbounded ramp function, the request rate r as a function of time t is
 herefore given by,
 
 <blockquote>
@@ -306,4 +310,3 @@ F<sup>-1</sup> = [-c + √(c<sup>2</sup> - 2a ln(1-cp))] / a
 </blockquote>
 
 where cp is a random number between (0, 1).
-
