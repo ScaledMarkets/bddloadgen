@@ -1,10 +1,10 @@
-package loadgen;
+package loadgen.profile;
 
 
 public abstract class PerformanceProfileReader extends BaseProfileReader
 {
 	public abstract void addLevel(double requestsPerSec, double deltaInMinutes);
-	
+
 	public void parseNextPartLine(String data)
 	{
 		String[] level = data.split(",");
@@ -13,4 +13,3 @@ public abstract class PerformanceProfileReader extends BaseProfileReader
 		addLevel(requestsPerSec, deltaInMinutes);
 	}
 }
-

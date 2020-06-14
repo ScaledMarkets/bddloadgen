@@ -1,4 +1,4 @@
-package loadgen;
+package loadgen.profile;
 
 
 import java.io.BufferedReader;

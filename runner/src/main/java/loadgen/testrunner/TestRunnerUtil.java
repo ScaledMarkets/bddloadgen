@@ -1,4 +1,4 @@
-package loadgen;
+package loadgen.testrunner;
 
 
 import java.io.File;

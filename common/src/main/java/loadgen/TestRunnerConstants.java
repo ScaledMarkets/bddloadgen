@@ -11,4 +11,3 @@ public class TestRunnerConstants
 	public static final String NodeStepsJarName = "steps.jar";
 	public static final String NodeStandardRoot = "var/Standard";
 }
-

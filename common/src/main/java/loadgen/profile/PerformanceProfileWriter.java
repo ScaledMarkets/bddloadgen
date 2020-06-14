@@ -1,4 +1,4 @@
-package loadgen;
+package loadgen.profile;
 
 
 import java.util.List;
@@ -17,4 +17,3 @@ public abstract class PerformanceProfileWriter extends BaseProfileWriter
 		return profileDef;
 	}
 }
-
