@@ -1,70 +1,90 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+<project>
 
-  <groupId>com.cliffberg</groupId>
-  <artifactId>loadgen-java</artifactId>
-  <version>1.0</version>
-  <name>loadgen-java</name>
-  <url>http://maven.apache.org</url>
-  <packaging>jar</packaging>
+	<modelVersion>4.0.0</modelVersion>
 
-  <dependencies>
+	<groupId>com.cliffberg</groupId>
+	<artifactId>loadgen</artifactId>
+	<version>1.0</version>
+	<name>Load Generator</name>
+	<packaging>pom</packaging>
 
-    <dependency>
-      <groupId>org.jbehave</groupId>
-      <artifactId>jbehave-core</artifactId>
-      <version>3.9</version>
-    </dependency>
+	<modules>
+		<module>common</module>
+		<module>controller</module>
+		<module>runner</module>
+		<module>demos</module>
+	</modules>
 
-  </dependencies>
+	<properties>
+		<maven.compiler.source>14</maven.compiler.source>
+		<maven.compiler.target>14</maven.compiler.target>
+		<maven.compiler.release>14</maven.compiler.release>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 
-  <build>
+	<repositories>
 
-      <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
-      <scriptSourceDirectory>${basedir}/src/main/scripts</scriptSourceDirectory>
-      <testSourceDirectory>${basedir}/src/test/java</testSourceDirectory>
-      <outputDirectory>${basedir}/target/classes</outputDirectory>
-      <testOutputDirectory>${basedir}/target/test-classes</testOutputDirectory>
+		<repository>
+			<id>central</id>
+			<name>Maven Repository Switchboard</name>
+			<layout>default</layout>
+			<url>https://repo1.maven.org/maven2</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
 
-	  <plugins>
+	</repositories>
 
-		  <plugin>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.12</version>
-			<scope>test</scope>
-		  </plugin>
+	<build>
 
-		  <plugin>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-compiler-plugin</artifactId>
-			<version>3.2</version>
-			<configuration>
-			  <source>14</source>
-			  <target>14</target>
-			</configuration>
-		  </plugin>
+		<plugins>
 
-		  <plugin>
-			  <groupId>org.apache.maven.plugins</groupId>
-			  <artifactId>maven-toolchains-plugin</artifactId>
-			  <version>1.1</version>
-			  <executions>
-				  <execution>
-					  <phase>validate</phase>   <!-- check -->
-					  <goals>
-						  <goal>toolchain</goal>
-					  </goals>
-				  </execution>
-			  </executions>
-			  <configuration>
-				  <toolchains><jdk><version>14</version></jdk></toolchains>
-			  </configuration>
-		  </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-toolchains-plugin</artifactId>
+				<version>1.1</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>toolchain</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<toolchains>
+						<jdk>
+							<version>${maven.compiler.source}</version>
+						</jdk>
+					</toolchains>
+				</configuration>
+			</plugin>
 
-	  </plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.7.0</version>
+				<executions>
+					<execution>
+						<id>compile-source</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<source>${maven.compiler.source}</source>
+					<target>${maven.compiler.target}</target>
+					<release>${maven.compiler.release}</release>
+					<compilerArguments>
+						<Xmaxerrs>5</Xmaxerrs>
+					</compilerArguments>
+				</configuration>
+			</plugin>
 
-  </build>
+		</plugins>
+
+	</build>
 
 </project>
