@@ -6,6 +6,18 @@ package loadgen;
  */
 public class TestRunnerConstants
 {
+	// Predefined event types.
+
+
+	/** Includes time to invoke JBehave. This event is generated automatically
+		by the TestRunner. */
+	public static String EndToEnd = "EndToEnd";
+
+	/** From timelogBeginTest to timelogEndTest */
+	public static String WholeTest = "WholeTest";
+
+
+
 	public static final String NodeProjectRoot = "/var/Project";
 	public static final String NodeFeatureDirName = "features";
 	public static final String NodeStepsJarName = "steps.jar";

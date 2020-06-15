@@ -1,7 +1,7 @@
 package loadgen.controller;
 
 
-import loadgen.*;
+
 import loadgen.controller.templates.SupportedProviders;
 import java.io.File;
 import java.io.IOException;
@@ -21,14 +21,16 @@ import java.nio.file.Files;
 	at 0. */
 public class Distribution
 {
+	private LoadGenerator lg;
 	private String thisname;
 	private String thistype;
 	private List<double[]> thislevels = new Vector<double[]>();
-	
+
 	/** The allowed value for 'type' is 'ramp'. */
-	Distribution(String name, Consumer<Distribution> block)
+	Distribution(LoadGenerator lg, String name, Consumer<Distribution> block)
 	{
-		LoadGenerator.validateName(name, "Distribution");
+		this.lg = lg;
+		lg.validateName(name, "Distribution");
 		thisname = name;
 		thistype = "ramp";
 		if (block != null) block.accept(this);
@@ -51,7 +53,7 @@ public class Distribution
 	{
 		if (deltaInMinutes <= 0.0) throw new RuntimeException(
 			"invalid level time value: " + deltaInMinutes);
-		
+
 		thislevels.add(new double[] {requestsPerSec, deltaInMinutes});
 	}
 
@@ -59,11 +61,11 @@ public class Distribution
 	{
 		return thislevels;
 	}
-	
-	
+
+
 	void writeDistributionAsJSON(int indentLevel, PrintWriter file)
 	{
-		String indstr = LoadGenerator.getIndentStrForLevel(indentLevel);
+		String indstr = lg.getIndentStrForLevel(indentLevel);
 
 		file.println(indstr + "\"name\": \"" + name() + "\",");
 		file.println(indstr + "\"type\": \"" + type() + "\",");
@@ -80,4 +82,3 @@ public class Distribution
 		file.println(indstr + "]");
 	}
 }
-

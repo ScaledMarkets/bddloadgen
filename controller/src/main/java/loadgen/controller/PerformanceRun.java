@@ -1,14 +1,12 @@
 package loadgen.controller;
 
+import loadgen.TestRunnerConstants;
+import loadgen.Version;
 
-import loadgen.profile.*;
-import loadgen.controller.templates.SupportedProviders;
 import java.io.*;
-import java.net.InetAddress;
 import java.util.jar.*;
 import java.util.function.*;
 import java.util.*;
-import java.nio.file.Files;
 import java.awt.Color;
 
 
@@ -25,9 +23,9 @@ public class PerformanceRun extends AbstractTestRun
 	private List<String> thisTables = new Vector<String>();
 
 
-	PerformanceRun(String name, Consumer<PerformanceRun> block)
+	PerformanceRun(LoadGenerator lg, String name, Consumer<PerformanceRun> block)
 	{
-		super(name);
+		super(lg, name);
 		if (block != null) block.accept(this);
 	}
 
@@ -49,9 +47,9 @@ public class PerformanceRun extends AbstractTestRun
 
 	/** Create a graph (in SVG format) of the results, for the specified event
 		type. Event types are defined in the cucumber tests by calling the
-		'timelogBegin' and 'timelogEnd' methods in the utility class 'TestRunnerUtil'.
+		'timelogBegin' and 'timelogEnd' methods in the utility class 'TestRunnerConstants'.
 		Note that the 'EndToEnd' and 'WholeTest' events are always graphed (see
-		TestRunnerUtil for explanations of these event types). */
+		TestRunnerConstants for explanations of these event types). */
 	public void graphEvent(String eventTypeName, String color)
 	{
 		graphEvents().add(eventTypeName);
@@ -175,7 +173,7 @@ public class PerformanceRun extends AbstractTestRun
 	}
 
 	/** Return an array of the response times, sorted by increasing response time,
-		for the specified request types and the specified event type. (See TestRunnerUtil
+		for the specified request types and the specified event type. (See TestRunnerConstants
 		for explanation of event type.) */
 	public List<Double> getSortedResponseTimes(String eventTypeName, String... reqTypeNames)
 	{
@@ -274,7 +272,7 @@ public class PerformanceRun extends AbstractTestRun
 		if (reqLog() != null)
 		{
 			System.out.println("Statistics for test run " + name() +
-				", end-to-end: " + getStats(TestRunnerUtil.EndToEnd));
+				", end-to-end: " + getStats(TestRunnerConstants.EndToEnd));
 			System.out.println("Statistics for test run " + name() +
 				", all events: " + getStats(null));
 
@@ -282,7 +280,7 @@ public class PerformanceRun extends AbstractTestRun
 			{
 				for (String eventTypeName : detailLog().eventTypeCount().keySet())
 				{
-					if (eventTypeName.equals(TestRunnerUtil.WholeTest)) continue;
+					if (eventTypeName.equals(TestRunnerConstants.WholeTest)) continue;
 					genGraph(eventTypeName);
 				}
 			}
@@ -290,18 +288,18 @@ public class PerformanceRun extends AbstractTestRun
 			{
 				for (String eventTypeName : graphEvents())
 				{
-					if (eventTypeName.equals(TestRunnerUtil.WholeTest)) continue;
-					if (eventTypeName.equals(TestRunnerUtil.EndToEnd)) continue;
+					if (eventTypeName.equals(TestRunnerConstants.WholeTest)) continue;
+					if (eventTypeName.equals(TestRunnerConstants.EndToEnd)) continue;
 					genGraph(eventTypeName);
 				}
 			}
-			genGraph(TestRunnerUtil.WholeTest);  // always graph this
-			genGraph(TestRunnerUtil.EndToEnd);  // always graph this
+			genGraph(TestRunnerConstants.WholeTest);  // always graph this
+			genGraph(TestRunnerConstants.EndToEnd);  // always graph this
 
 			writeResults();  // Note: the graphs must be generated before this can be called.
 
 			// Insert data into database (Elastic Search).
-			if (LoadGenerator.getResultsDatabaseConfig().getURL() != null)
+			if (lg.getResultsDatabaseConfig().getURL() != null)
 				pushResultsToDatabase();
 		}
 		else
@@ -352,8 +350,8 @@ public class PerformanceRun extends AbstractTestRun
 				(! logDataEntry.name.equals(eventTypeName))) continue;
 
 			// Exclude whole test and end-to-end events from the request count.
-			if ((!eventTypeName.equals(TestRunnerUtil.EndToEnd)) &&
-				(! eventTypeName.equals(TestRunnerUtil.WholeTest)))
+			if ((!eventTypeName.equals(TestRunnerConstants.EndToEnd)) &&
+				(! eventTypeName.equals(TestRunnerConstants.WholeTest)))
 				noOfReqs = noOfReqs + 1;
 
 			double time = logDataEntry.duration;  // select the duration
@@ -413,8 +411,8 @@ public class PerformanceRun extends AbstractTestRun
 				(! logDataEntry.name.equals(eventTypeName))) continue;
 
 			// Exclude whole test and end-to-end events from the request count.
-			if ((! eventTypeName.equals(TestRunnerUtil.EndToEnd)) &&
-				(! eventTypeName.equals(TestRunnerUtil.WholeTest)))
+			if ((! eventTypeName.equals(TestRunnerConstants.EndToEnd)) &&
+				(! eventTypeName.equals(TestRunnerConstants.WholeTest)))
 				noOfReqs = noOfReqs + 1;
 		}
 
@@ -436,8 +434,8 @@ public class PerformanceRun extends AbstractTestRun
 		double latestTime = 0.0;
 		for (String profileName : testRunProfiles())
 		{
-			PerformanceProfile profile = LoadGenerator.getPerformanceProfile(profileName);
-			Distribution distribution = LoadGenerator.getDistribution(profile.distribution());
+			PerformanceProfile profile = lg.getPerformanceProfile(profileName);
+			Distribution distribution = lg.getDistribution(profile.distribution());
 			double distLatestTime = 0.0;
 			for (double[] level : distribution.levels())
 				distLatestTime = distLatestTime + (level[1] * 60.0);
@@ -474,7 +472,7 @@ public class PerformanceRun extends AbstractTestRun
 
 
 	/** Return an array of the response times, sorted by increasing response time,
-		for the specified request types and the specified event type. (See TestRunnerUtil
+		for the specified request types and the specified event type. (See TestRunnerConstants
 		for explanation of event type.) */
 	List<Double> sortResponseTimes(String eventTypeName, String... reqTypeNames)
 	{
@@ -513,7 +511,7 @@ public class PerformanceRun extends AbstractTestRun
 	{
 		writeResultsAsJSON();
 		writeResultsForTestRunAsCSV();
-		for (String rt : LoadGenerator.getRequestTypes().keySet())
+		for (String rt : lg.getRequestTypes().keySet())
 			writeResultsForRequestTypeAsCSV(rt);
 		writeStatisticalSummary();
 	}
@@ -540,7 +538,7 @@ public class PerformanceRun extends AbstractTestRun
 		file.println("<body>");
 		file.println("<h1>Summary results for test run " + name() + ", " + timestamp() + "</h1>");
 		file.println("<h2>Statistics for end-to-end test completion times</h2>");
-		file.println("<p>" + getStats(TestRunnerUtil.EndToEnd) + "</p>");
+		file.println("<p>" + getStats(TestRunnerConstants.EndToEnd) + "</p>");
 		file.println("<h2>Statistics for all other event times, aggregated</h2>");
 		file.println("<p>" + getStats(null) + "</p>");
 		file.println("<h1>Graphs (" + getGraphs().size() + ")</h1>");
@@ -638,31 +636,31 @@ public class PerformanceRun extends AbstractTestRun
 
 	String getElasticSearchURL()
 	{
-		return LoadGenerator.getResultsDatabaseConfig().getURL();
+		return lg.getResultsDatabaseConfig().getURL();
 	}
 
 
 	String getElasticSearchUserId()
 	{
-		return LoadGenerator.getResultsDatabaseConfig().getUserId();
+		return lg.getResultsDatabaseConfig().getUserId();
 	}
 
 
 	String getElasticSearchPassword()
 	{
-		return LoadGenerator.getResultsDatabaseConfig().getPassword();
+		return lg.getResultsDatabaseConfig().getPassword();
 	}
 
 
 	String getElasticSearchIndexName()
 	{
-		return LoadGenerator.getResultsDatabaseConfig().indexName();
+		return lg.getResultsDatabaseConfig().indexName();
 	}
 
 
 	String getElasticSearchDataType()
 	{
-		return LoadGenerator.getResultsDatabaseConfig().jsonDataType();
+		return lg.getResultsDatabaseConfig().jsonDataType();
 	}
 
 
@@ -712,11 +710,11 @@ public class PerformanceRun extends AbstractTestRun
 		for (int i = 1; i <= indentLevel; i++) indstr = indstr + "\t";
 
 		file.println(indstr + "\"test_run_name\": \"" + name() + "\",");
-		//file.println(indstr + "\"performance_feature_desc\": \"" + LoadGenerator.getFeatureDesc() + "\",");
-		//file.println(indstr + "\"performance_scenario_desc\": \"" + LoadGenerator.getScenarioDesc() + "\",");
+		//file.println(indstr + "\"performance_feature_desc\": \"" + lg.getFeatureDesc() + "\",");
+		//file.println(indstr + "\"performance_scenario_desc\": \"" + lg.getScenarioDesc() + "\",");
 		//file.println(indstr + "\"performance_scenario_tags\": [");
 		boolean firstTime = true;
-		//for (String tag : LoadGenerator.getScenarioTags())
+		//for (String tag : lg.getScenarioTags())
 		//{
 		//	if (firstTime) firstTime = false;
 		//	else file.println(indstr + "\t,");
@@ -761,7 +759,7 @@ public class PerformanceRun extends AbstractTestRun
 			if (firstTime) firstTime = false;
 			else file.println(indstr + "\t,");
 
-			AbstractProfile profile = LoadGenerator.getProfile(profileName);
+			AbstractProfile profile = lg.getProfile(profileName);
 			file.println(indstr + "\t{");
 
 			// Write the profile as it currently exists at the end of the
@@ -775,7 +773,7 @@ public class PerformanceRun extends AbstractTestRun
 
 		file.println(indstr + "\"distributions\": [");
 		firstTime = true;
-		for (Distribution dist : LoadGenerator.getDistributions().values())
+		for (Distribution dist : lg.getDistributions().values())
 		{
 			if (firstTime) firstTime = false;
 			else file.println(indstr + "\t,");
@@ -826,7 +824,7 @@ public class PerformanceRun extends AbstractTestRun
 	private int thisImageWidth = 1000;
 	private int thisImageHeight = 600;
 	private int thisCharHeight = 20; // in pixels
-	private int statisticBoxHeight = (LoadGenerator.getRequestTypes().size() + 2) * thisCharHeight;
+	private int statisticBoxHeight = (lg.getRequestTypes().size() + 2) * thisCharHeight;
 	private int thisGraphHeight = thisImageHeight - statisticBoxHeight;
 
 
@@ -901,8 +899,8 @@ public class PerformanceRun extends AbstractTestRun
 		double highestLevel = 0.0;
 		for (String profileName : testRunProfiles())
 		{
-			PerformanceProfile profile = LoadGenerator.getPerformanceProfile(profileName);
-			Distribution distribution = LoadGenerator.getDistribution(profile.distribution());
+			PerformanceProfile profile = lg.getPerformanceProfile(profileName);
+			Distribution distribution = lg.getDistribution(profile.distribution());
 			latestProfileTime = minStartTime;
 			double priorLevel = 0.0;
 			for (double[] level : distribution.levels())
@@ -1053,7 +1051,7 @@ public class PerformanceRun extends AbstractTestRun
 		file.println("<text x=\"" + x + "\" y=\"" + translateDiagramY(y+thisCharHeight*i) +
 			"\" text-anchor=\"middle\" style=\"fill:black;font-family:Arial;font-size:14px;kerning:1;\">all: " +
 			getStats(eventTypeName) + "</text>");
-		for (String rt : LoadGenerator.getRequestTypes().keySet())
+		for (String rt : lg.getRequestTypes().keySet())
 		{
 			i = i + 1;
 			file.println("<text x=\"" + x + "\" y=\"" + translateDiagramY(y+thisCharHeight*i) +
@@ -1099,10 +1097,10 @@ public class PerformanceRun extends AbstractTestRun
 		int colorIndex = 0;
 		for (String profileName : testRunProfiles())
 		{
-			PerformanceProfile profile = LoadGenerator.getPerformanceProfile(profileName);
-			Distribution distribution = LoadGenerator.getDistribution(profile.distribution());
+			PerformanceProfile profile = lg.getPerformanceProfile(profileName);
+			Distribution distribution = lg.getDistribution(profile.distribution());
 
-			RequestType requestType = LoadGenerator.getRequestType(profile.requestType());
+			RequestType requestType = lg.getRequestType(profile.requestType());
 			String color = requestType.color();
 			//color = colors[colorIndex]
 			colorIndex = (colorIndex + 1) % (colors.length);
@@ -1135,7 +1133,7 @@ public class PerformanceRun extends AbstractTestRun
 
 			// Determine color for the request line.
 			String reqTypeName = logDataEntry.reqType;
-			RequestType rt = LoadGenerator.getRequestType(reqTypeName);
+			RequestType rt = lg.getRequestType(reqTypeName);
 			String color;
 			if (rt.color() == null)
 				color = "darkblue";  // default

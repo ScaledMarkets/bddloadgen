@@ -2,7 +2,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.cliffberg</groupId>
+	<groupId>com.cliffberg.loadgen</groupId>
 	<artifactId>loadgen</artifactId>
 	<version>1.0</version>
 	<name>Load Generator</name>
@@ -12,6 +12,7 @@
 		<module>common</module>
 		<module>controller</module>
 		<module>runner</module>
+		<module>providers</module>
 		<module>demos</module>
 	</modules>
 

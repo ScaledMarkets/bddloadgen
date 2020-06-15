@@ -14,17 +14,6 @@ import java.io.IOException;
 	*/
 public class TestRunnerUtil
 {
-    // Predefined event types.
-
-
-    /** Includes time to invoke JBehave. This event is generated automatically
-    	by the TestRunner. */
-    public static String EndToEnd = "EndToEnd";
-
-    /** From timelogBeginTest to timelogEndTest */
-    public static String WholeTest = "WholeTest";
-
-
     // Call these methods to delineate the start and end of tests.
 
 

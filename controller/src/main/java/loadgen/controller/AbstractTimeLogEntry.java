@@ -1,14 +1,11 @@
 package loadgen.controller;
 
 
-import loadgen.*;
-import loadgen.controller.templates.SupportedProviders;
 import java.io.*;
 import java.net.*;
 import java.util.jar.*;
 import java.util.function.*;
 import java.util.*;
-import java.nio.file.Files;
 
 
 abstract class AbstractTimeLogEntry
@@ -21,7 +18,7 @@ abstract class AbstractTimeLogEntry
 	double endTime;
 	double duration;
 	String result;
-	
+
 	AbstractTimeLogEntry(String reqType, String id, String name, double reqRate,
 		double startTime, double endTime, double duration)
 	{
@@ -29,9 +26,8 @@ abstract class AbstractTimeLogEntry
 		this.startTime = startTime; this.endTime = endTime;
 		this.duration = duration;
 	}
-	
+
 	double getSortableTime() { return startTime; }
-	
+
 	void setResult(String result) { this.result = result; }
 }
-

@@ -4,7 +4,7 @@
 
 	Arguments: See the "main" method (below).
 	*/
-package testrunner;
+package loadgen.testrunner;
 
 
 import loadgen.profile.*;

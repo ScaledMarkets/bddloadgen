@@ -1,7 +1,7 @@
 package loadgen.controller;
 
 
-import loadgen.*;
+
 import loadgen.controller.templates.SupportedProviders;
 import java.io.File;
 import java.io.PrintWriter;
@@ -19,13 +19,15 @@ import java.awt.Color;
 	test accordingly - including verification of the response. */
 public class RequestType
 {
+	protected LoadGenerator lg;
 	private String thisname;
 	private List<String> taglist = new Vector<String>();
 	private String thiscolor;
-	
-	RequestType(String name, Consumer<RequestType> block)
+
+	RequestType(LoadGenerator lg, String name, Consumer<RequestType> block)
 	{
-		LoadGenerator.validateName(name, "Request type");
+		this.lg = lg;
+		lg.validateName(name, "Request type");
 		thisname = name;
 		if (block != null) block.accept(this);
 	}
@@ -34,7 +36,7 @@ public class RequestType
 	{
 		return thisname;
 	}
-	
+
 	/** A string that is passed directly to cucumber as a --tags option value. */
 	public void tag(String t)
 	{
@@ -45,16 +47,15 @@ public class RequestType
 	{
 		return taglist;
 	}
-	
+
 	/** Set the color in which requests of this type should be drawn when graphed. */
 	public void setColor(String c)
 	{
 		thiscolor = c;
 	}
-	
+
 	public String color()
 	{
 		return thiscolor;
 	}
 }
-

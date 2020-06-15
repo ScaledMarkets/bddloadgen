@@ -2,19 +2,24 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>controller</artifactId>
+	<artifactId>loadgen-controller</artifactId>
 	<version>1.0</version>
 	<name>controller</name>
 	<packaging>jar</packaging>
 
 	<parent>
-		<groupId>com.cliffberg</groupId>
+		<groupId>com.cliffberg.loadgen</groupId>
 		<artifactId>loadgen</artifactId>
 		<version>1.0</version>
 	</parent>
 
 	<dependencies>
 
+		<dependency>
+			<groupId>com.cliffberg.loadgen</groupId>
+			<artifactId>loadgen-common</artifactId>
+			<version>1.0</version>
+		</dependency>
 
 	</dependencies>
 

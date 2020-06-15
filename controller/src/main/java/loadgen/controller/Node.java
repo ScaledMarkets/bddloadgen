@@ -1,7 +1,8 @@
 package loadgen.controller;
 
 
-import loadgen.*;
+import loadgen.TestRunnerConstants;
+import loadgen.EnvVars;
 import loadgen.controller.templates.SupportedProviders;
 import java.io.*;
 import java.net.*;
@@ -16,6 +17,7 @@ import java.nio.file.Files;
 	written code. */
 class Node
 {
+	private LoadGenerator lg;
 	private String thisName;
 	private AbstractTestRun thisTestRun;
 	private String thisSshConfigFilename;
@@ -37,10 +39,11 @@ class Node
 	private String thisNodeFeaturesDir;
 	private String thisNodeIpAddress;
 	private long thisRandomSeed;
-		
-	
-	Node(String name, AbstractTestRun testRun)
+
+
+	Node(LoadGenerator lg, String name, AbstractTestRun testRun)
 	{
+		this.lg = lg;
 		thisName = name;
 		thisTestRun = testRun;
 	}
@@ -49,43 +52,43 @@ class Node
 	{
 		return thisName;
 	}
-	
+
 	AbstractTestRun testRun()
 	{
 		return thisTestRun;
 	}
-	
+
 	String sshConfigFilename()
 	{
 		return thisSshConfigFilename;
 	}
-	
+
 	AbstractProvider getProvider()
 	{
 		return thisTestRun.getProvider();
 	}
-	
+
 	boolean providerIsDynamic()
 	{
 		return getProvider().isDynamic();
 	}
-	
+
 	void performShellCommandOnNode(String command)
 	{
-		if (LoadGenerator.isTestMode()) return;
-		
+		if (lg.isTestMode()) return;
+
 		String userid = getProvider().getVagrantUserid();
-		
+
 		String machine;
 		if (providerIsDynamic()) machine = "default";
 		else machine = name();
-			
+
 		String script = "cd " + thisScriptDir + "; ssh -F " + sshConfigFilename() +
 			" " + userid + "@" + machine + " " + command;
-		
+
 		System.out.println(">>>Using script to perform command on node " + name() + ":");
 		System.out.println("\t" + script);
-		
+
 		boolean wasSuccessful = false;
 		try {
 			wasSuccessful = (Runtime.getRuntime().exec(script).waitFor() == 0);
@@ -95,7 +98,7 @@ class Node
 		if (! wasSuccessful) throw new RuntimeException("Terminating");
 	}
 
-	
+
 	/** Write a Vagrantfile and a chef file, and run vagrant against the Vagrantfile,
 		to create and provision the required set of test nodes (VMs).
 		This method will create (in the results directory) a directory with a name
@@ -106,35 +109,35 @@ class Node
 	void provision(long randomSeed, String ipAddress) throws IOException
 	{
 		System.out.println("Provisioning node " + name());
-		
+
 		thisCookbookName = name();
-		
+
 		thisNodeStandardDir = TestRunnerConstants.NodeStandardRoot;
-		
+
 		thisNodeProjectDir = TestRunnerConstants.NodeProjectRoot;
-		
+
 		thisNodeResultsRoot = "/var/results";
 
 		thisSshConfigFilename = "sshconfig_" + name();
-		
+
 		// Create a scratch directory for writing the vagrant and chef files.
 		thisScriptDir = thisTestRun.resultsDirectory() + "/scripts/" + thisTestRun.name() + "/" + thisName;
 		File file = new File(thisScriptDir);
 		if (! file.exists()) file.mkdirs();
-		
+
 		// Define where vagrant will look for the cookbook that we generate.
-		// This will be in the 
+		// This will be in the
 		thisCookbookDir = thisScriptDir + "/cookbooks";
 		file = new File(thisCookbookDir);
 		if (! file.exists()) file.mkdirs();
-		
+
 		// Directory cucumber "features" directory on each node where the test
 		// case feature files can be found.
 		thisNodeFeaturesDir = thisTestRun.nodeFeaturesDirectory();
-		
+
 		// Define the IP address to use for this Node in the virtual network.
 		thisNodeIpAddress = ipAddress;
-		
+
 		thisRandomSeed = randomSeed;
 
 		// Create/provision the node (VM), as appropriate.
@@ -142,15 +145,15 @@ class Node
 		String script;
 		if (thisTestRun.getProvider().isDynamic())
 		{
-			DynamicProvider dynProvider = (DynamicProvider)(thisTestRun.getProvider());
-			
+			VagrantProvider dynProvider = (VagrantProvider)(thisTestRun.getProvider());
+
 			// Destroy existing nodes if necessary.
-			if ((! thisTestRun.willReuseNodes()) && (! LoadGenerator.isTestMode()))
+			if ((! thisTestRun.willReuseNodes()) && (! lg.isTestMode()))
 			{
 				script = "cd " + thisScriptDir + "; /usr/bin/vagrant destroy -f";
 				System.out.println(">>>Using script to destroy nodes:");
 				System.out.println("\t" + script);
-				
+
 				try {
 					int status = Runtime.getRuntime().exec(script).waitFor();
 					System.out.println("\tReturn status: " + status);
@@ -170,16 +173,16 @@ class Node
 			script = "cd " + vagrantfileDir + "; export " + EnvVars.Suppl_cookbook_dir + "=" + thisCookbookDir + "; " +
 				"/usr/bin/vagrant up --provider managed " + name() + "; /usr/bin/vagrant provision " + name();
 		}
-	
+
 		// Run the script, to create the nodes if necessary, start them, and transfer the
 		// tests to each node.
 
-		if (LoadGenerator.isTestMode())
+		if (lg.isTestMode())
 		{
 			System.out.println("Test mode: skipping vagrant up");
 			return;
 		}
-		
+
 		System.out.println(">>>Running vagrant in " + thisScriptDir + " for node " + name() + " with this command:");
 		System.out.println("\t" + script);
 		boolean wasSuccessful;
@@ -204,7 +207,7 @@ class Node
 			wasSuccessful = (Runtime.getRuntime().exec(script).waitFor() == 0);
 			System.out.println("Obtained SSH config: success: " + wasSuccessful);
 			if (! wasSuccessful) throw new RuntimeException("Terminating");
-		} catch (InterruptedException ex) { throw new RuntimeException(ex); }	
+		} catch (InterruptedException ex) { throw new RuntimeException(ex); }
 
 		// Workaround for the problem that a FOG warning gets written to
 		// the sshconfig file, corrupting it. Simply remove the warning line.
@@ -242,17 +245,17 @@ class Node
 		if (reqType != null) command = command + " " + reqType;
 		performShellCommandOnNode(command);
 	}
-	
+
 	void start()
 	{
 		start(null);
 	}
-	
+
 	String resultsRoot()
 	{
 		return thisNodeResultsRoot;
 	}
-	
+
 	/** Destroy the VM or whatever resource this Node represents. */
 	void destroy()
 	{
@@ -261,7 +264,7 @@ class Node
 			System.out.println("Attempt to destroy a node for a non-dynamic provider");
 			return;
 		}
-		
+
 		String script = "cd " + thisScriptDir + "; /usr/bin/vagrant destroy -f";
 		System.out.println(">>>Using this script to destroy node:");
 		System.out.println("\t" + script);
@@ -274,31 +277,31 @@ class Node
 		catch (InterruptedException ex) { throw new RuntimeException(ex); }
 		catch (IOException ex2) { throw new RuntimeException(ex2); }
 	}
-	
+
 	// Retrieve this Node's time log and store it in the specified file.
 	void fetchTimeLogInto(String targetLocalFilePath)
 	{
 		String command = "cat " + resultsRoot() + "/timelog.csv > " + targetLocalFilePath;
 		performShellCommandOnNode(command);
 	}
-	
+
 	void fetchDetailTimeLogInto(String targetLocalFilePath)
 	{
 		String command = "cat " + resultsRoot() + "/detailtimelog.csv > " + targetLocalFilePath;
 		performShellCommandOnNode(command);
 	}
-	
+
 	// Retrieve this Node's stdout log and store it in the specified file.
 	void fetchStdoutInto(String localnodestdoutpath)
 	{
 		String command = "cat " + resultsRoot() + "/" + thisTestRun.name() + " > " + localnodestdoutpath;
 		performShellCommandOnNode(command);
 	}
-	
-	
+
+
 	/* ----------------------------------------------------------------------
 	Implementation methods.
-	
+
 	Notes:
 	The directory "controller/templates" contains a vagrantfile template and a chef recipe
 	template for each supported provider. These templates embed replaceable
@@ -308,20 +311,20 @@ class Node
 	providers are added.
 	*/
 
-	
+
 	void writeVagrantfile() throws IOException
 	{
 		System.out.println("Writing Vagrantfile for node " + name());
-		String providerName = LoadGenerator.getProviderConfigs().get(
+		String providerName = lg.getProviderConfigs().get(
 			thisTestRun.providerConfig()).providerName();
 		String content = getProvider().getVagrantfileTemplate();
 		content = content.replace("GEN_COOKBOOKDIR", thisCookbookDir);
 		if (thisTestRun.getProvider().isDynamic())
 		{
 			content = content.replace("PROVIDER_BOX_NAME",
-				((DynamicProvider)(thisTestRun.getProvider())).providerBoxName());
+				((VagrantProvider)(thisTestRun.getProvider())).providerBoxName());
 			content = content.replace("PROVIDER_BOX_URL",
-				((DynamicProvider)(thisTestRun.getProvider())).providerBoxURL());
+				((VagrantProvider)(thisTestRun.getProvider())).providerBoxURL());
 		}
 		if (thisNodeIpAddress != null)
 			content = content.replace("GEN_HOSTONLY_ADDRESS", thisNodeIpAddress);
@@ -329,16 +332,16 @@ class Node
 		content = content.replace("GEN_FEATURES_DIR", thisTestRun.featuresDirectory());
 		content = content.replace("GEN_NODE_RESOURCES_DIR", thisNodeStandardDir);
 		content = content.replace("COOKBOOK_NAME", thisCookbookName);
-		
+
 		String headedconfig = "";
 		if (thisTestRun.areNodesHeaded())
-			headedconfig = 
+			headedconfig =
 				"config.vm.provider \"" + thisTestRun.getProvider() + "\" do |v|\n" +
 				"    v.gui = true\n" +
 				"  end\n";
-		
+
 		content = content.replace("GUICONFIG", headedconfig);
-		
+
 		String vagrantfilePath = thisScriptDir + "/Vagrantfile";
 		(new FileWriter(vagrantfilePath)).write(content);
 		System.out.println("wrote Vagrantfile to " + vagrantfilePath);
@@ -356,7 +359,7 @@ class Node
 		List<String> profiles = thisTestRun.testRunProfiles();
 		for (String profileName : profiles)
 		{
-			AbstractProfile profile = LoadGenerator.getProfile(profileName);
+			AbstractProfile profile = lg.getProfile(profileName);
 			String profileDef = profile.getProfileDefinition(thisTestRun);
 			profileDef = profileDef.replace("/", "\"");
 			System.out.println("AbstractProfile " + profileName + ":");
@@ -372,11 +375,11 @@ class Node
 				"    content \"" + profileDef + "\"\n" +
 				"end\n\n";
 		}
-		
+
 		String recipeDir = thisCookbookDir + "/" + thisCookbookName + "/recipes";
 		File recDirFile = new File(recipeDir);
 		if (! recDirFile.exists()) recDirFile.mkdirs();
-		String providerName = LoadGenerator.getProviderConfigs().get(thisTestRun.providerConfig()).providerName();
+		String providerName = lg.getProviderConfigs().get(thisTestRun.providerConfig()).providerName();
 		String content = getProvider().getChefRecipeTemplate();
 		if (thisProjectRepoName != null) content = content.replace("PROJECT_REPO_NAME", thisProjectRepoName);
 		if (thisProjectRepoURL != null) content = content.replace("PROJECT_REPO_URL", thisProjectRepoURL);
@@ -387,7 +390,7 @@ class Node
 		if (thisProjectRepoFQDN != null) content = content.replace("PROJECT_REPO_FQND", thisProjectRepoFQDN);
 		if (thisGitUserid != null) content = content.replace("GIT_USERID", thisGitUserid);
 		if (thisGitPassword != null) content = content.replace("GIT_PASSWORD", thisGitPassword);
-			
+
 		content = content.replace("PROJECT_GEM_SERVER_URL", thisProjectGemServerURL);
 		content = content.replace("HASHSIGN", "#");
 		content = content.replace("BACKSLASH", "\\");
@@ -396,8 +399,8 @@ class Node
 		content = content.replace("CONTROL_SCRIPT_CONTENT", controlScriptContent);
 		content = content.replace("GEN_NODE_RESOURCES_DIR", thisNodeStandardDir);
 		content = content.replace("STEPS_JAR_URL", thisTestRun.stepsJarURL());
-		content = content.replace("LOADGEN_JAR_URL", LoadGenerator.loadgenJarURL());
-		
+		content = content.replace("LOADGEN_JAR_URL", lg.loadgenJarURL());
+
 		String binrsrcs = "";
 		for (String binrsrc : thisTestRun.binaryResources())
 		{
@@ -407,7 +410,7 @@ class Node
 				"end\n";
 		}
 		content = content.replace("BIN_RESOURCES", binrsrcs);
-		
+
 		String bundles = "";
 		for (String[] entry : thisTestRun.requireRubyDirs())
 		{
@@ -419,16 +422,16 @@ class Node
 				"end\n";
 		}
 		content = content.replace("ADDL_BUNDLES", bundles);
-		
+
 		String recipePath = recipeDir + "/default.rb";
 		(new FileWriter(recipePath)).write(content);
 		System.out.println("wrote recipe to " + recipePath);
 	}
-	
+
 	String getShellScript()
 	{
 		String content = testrunnerTemplate();
-		
+
 		String exports = "";
 		for (String[] entry : thisTestRun.requireRubyDirs())
 			exports = exports + "export " + entry[0] + "=/var/Tests" +
@@ -437,7 +440,7 @@ class Node
 			exports = exports + "export " + varname + "=" +
 				thisTestRun.envVars().get(varname) + "\n";
 		content = content.replace("ADDL_EXPORTS", exports);
-		
+
 		/* Assemble a feature parameter for JBehave. It is passed to TestRunner
 		as a single parameter, consisting of a sequence of features separated
 		by a semicolon. The feature directory is prepended to each feature. If the
@@ -459,7 +462,7 @@ class Node
 				featureSpecs = featureSpecs + thisNodeFeaturesDir + "/" + featureSpec;
 			}
 		}
-		
+
 		String stepClassnames = "";
 		boolean first = true;
 		for (String stepClassname : testRun().stepClassNames())
@@ -468,7 +471,7 @@ class Node
 			else stepClassnames += ",";
 			stepClassnames += stepClassname;
 		}
-		
+
 		String nodeStepsJarPath = testRun().nodeStepsJarPath();
 
 		content = content.replace("GEN_NODE_FEATURES_SPEC", featureSpecs);
@@ -486,15 +489,15 @@ class Node
 		List<String> profiles = thisTestRun.testRunProfiles();
 		for (String profileName : profiles)
 		{
-			AbstractProfile profile = LoadGenerator.getProfile(profileName);
+			AbstractProfile profile = lg.getProfile(profileName);
 			profileListString = profileListString + thisNodeProjectDir + "/" + profileName + " ";
 		}
 
 		content = content.replace("GEN_PROFILE_FILE", profileListString);
 		return content;
 	}
-	
-	
+
+
 	/** Template for a script that is deployed to each VM. The test controller then
 		ssh-es into each VM and runs this script, which starts the tests. */
 	static String testrunnerTemplate()
@@ -502,14 +505,14 @@ class Node
 		return
 		"#!/bin/bash\n" +
 		"export PATH=$PATH:/opt/chef/embedded/bin:/opt/chef/embedded/lib/ruby/gems/1.9.1/gems\n" +
-		"export " + EnvVars.JBehaveJarPathOnNode + "=" + LoadGenerator.jBehaveJarPathOnNode() + "\n" +
-		"export " + EnvVars.LoadgenJarPathOnNode + "=" + LoadGenerator.loadgenJarPathOnNode() + "\n" +
+		"export " + EnvVars.JBehaveJarPathOnNode + "=" + lg.jBehaveJarPathOnNode() + "\n" +
+		"export " + EnvVars.LoadgenJarPathOnNode + "=" + lg.loadgenJarPathOnNode() + "\n" +
 		"export RESULTS_DIR=GEN_NODE_RESULTS_DIR\n" +
 		"export ABORT_IF_TESTS_CANNOT_ACHIEVE_PROFILE=ABORT_IF_TESTS_CANNOT_ACHIEVE_PROFILE_VALUE\n" +
 		"export RANDOM_SEED=RANDOM_SEED_VALUE\n" +
 		"ADDL_EXPORTS\n" +
 		"java -cp \"" +
-			LoadGenerator.loadgenJarPathOnNode() + ":" + LoadGenerator.jBehaveJarPathOnNode() +
+			lg.loadgenJarPathOnNode() + ":" + lg.jBehaveJarPathOnNode() +
 			"\" testrunner.TestRunner\n" +
 			"\"GEN_NODE_FEATURES_SPEC\" " +
 			"\"GEN_NODE_STEP_CLASSES\" " + // (comma-separated list)
@@ -519,4 +522,3 @@ class Node
 		"SHELLSCRIPTTEMPLATE\n";
 	}
 }
-

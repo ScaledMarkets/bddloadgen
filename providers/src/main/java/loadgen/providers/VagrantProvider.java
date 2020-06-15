@@ -1,7 +1,7 @@
-package loadgen.controller;
+package loadgen.providers;
 
 
-import loadgen.*;
+
 import loadgen.controller.templates.SupportedProviders;
 import java.io.File;
 import java.io.PrintWriter;
@@ -14,24 +14,25 @@ import java.nio.file.Files;
 
 
 /** For providers that can perform vagrant up. */
-public class DynamicProvider extends AbstractProvider
+public class VagrantProvider extends AbstractProvider
 {
 	private String thisProviderBoxName;
 	private String thisProviderBoxURL;
 	private String thisVagrantfileTemplatePath;
 	private String thisVagrantUserid;
 
-	DynamicProvider(String confname, Consumer<DynamicProvider> block)
+	VagrantProvider(LoadGenerator lg, String confname, Consumer<VagrantProvider> block)
 	{
-		super(confname);
+		super(lg, confname);
+
 		if (block != null) block.accept(this);
 	}
-	
+
 	boolean isDynamic()
 	{
 		return true;
 	}
-	
+
 	Map<String, String> nodeIps() { throw new RuntimeException("Should not be called"); }
 
 	/** The name of the provider box definition. This is passed to Vagrant
@@ -57,7 +58,7 @@ public class DynamicProvider extends AbstractProvider
 	{
 		return thisProviderBoxURL;
 	}
-	
+
 	/** Optional. Only use if the provider is not builtin. The path is absolute,
 		on the test controller's file system. */
 	public void setVagrantfileTemplatePath(String path)
@@ -68,7 +69,7 @@ public class DynamicProvider extends AbstractProvider
 	String getVagrantfileTemplate()
 	{
 		if (thisVagrantfileTemplatePath == null)  // fetch the builtin one
-			return LoadGenerator.vagrantBuiltinTemplate(providerName());
+			return lg.vagrantBuiltinTemplate(providerName());
 		else try
 		{
 			System.out.println("Using user supplied Vagrantfile template: " + thisVagrantfileTemplatePath);
@@ -84,23 +85,22 @@ public class DynamicProvider extends AbstractProvider
 	{
 		thisVagrantUserid = id;
 	}
-	
+
 	String getVagrantUserid()
 	{
 		if (thisVagrantUserid == null)
-			return LoadGenerator.getBuiltinProviderUserIds().get(providerName());
+			return lg.getBuiltinProviderUserIds().get(providerName());
 		else
 			return thisVagrantUserid;
 	}
-	
+
 	void writeProviderAsJSON(int indentLevel, PrintWriter file)
 	{
-		String indstr = LoadGenerator.getIndentStrForLevel(indentLevel);
-		
+		String indstr = lg.getIndentStrForLevel(indentLevel);
+
 		super.writeProviderAsJSON(indentLevel, file);
 		file.println(indstr + "\"isDynamic\": " + isDynamic());
 		file.println(indstr + "\"providerBoxName\": \"" + providerBoxName() + "\",");
 		file.println(indstr + "\"providerBoxURL\": \"" + providerBoxURL() + "\",");
 	}
 }
-

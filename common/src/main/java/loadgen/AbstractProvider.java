@@ -1,8 +1,6 @@
-package loadgen.controller;
+package loadgen;
 
 
-import loadgen.*;
-import loadgen.controller.templates.SupportedProviders;
 import java.io.*;
 import java.net.*;
 import java.util.jar.*;
@@ -14,27 +12,29 @@ import java.nio.file.Files;
 /** Describe an infrastructure provider (e.g., aws, virtualbox, etc.). */
 abstract class AbstractProvider
 {
-	private String thisname;
-	private String thisProviderName;
-	private String thisRecipeTemplatePath;
-	
-	
-	AbstractProvider(String confname)
+	protected AbstractLoadGenerator lg;
+	protected String thisname;
+	protected String thisProviderName;
+	protected String thisRecipeTemplatePath;
+
+
+	AbstractProvider(AbstractLoadGenerator lg, String confname)
 	{
-		LoadGenerator.validateName(confname, "Provider configuration");
+		this.lg = lg;
+		lg.validateName(confname, "Provider configuration");
 		thisname = confname;  // the name to use when referencing this configuration.
 	}
-	
+
 	abstract boolean isDynamic();
 
 	abstract Map<String, String> nodeIps();
-	
-	
+
+
 	String getConfigurationName()
 	{
 		return thisname;
 	}
-	
+
 	public void setProviderName(String name)
 	{
 		thisProviderName = name;
@@ -44,17 +44,17 @@ abstract class AbstractProvider
 	{
 		return thisProviderName;
 	}
-	
+
 	String getVagrantfileTemplate()
 	{
-		return LoadGenerator.vagrantBuiltinTemplate(providerName());  // Fetch the builtin one
+		return lg.vagrantBuiltinTemplate(providerName());  // Fetch the builtin one
 	}
 
 	String getVagrantUserid()
 	{
-		return LoadGenerator.getBuiltinProviderUserIds().get(providerName());  // Fetch the builtin one
+		return lg.getBuiltinProviderUserIds().get(providerName());  // Fetch the builtin one
 	}
-	
+
 	/** Optional. Only use if the provider is not builtin.
 		The path should be absolute, on the test controller's file system. */
 	public void setChefRecipeTemplatePath(String path)
@@ -67,7 +67,7 @@ abstract class AbstractProvider
 	String getChefRecipeTemplate()
 	{
 		if (thisRecipeTemplatePath == null)
-			return LoadGenerator.chefBuiltinTemplate(providerName());
+			return lg.chefBuiltinTemplate(providerName());
 		else try
 		{
 			System.out.println("Using user supplied recipe template: " + thisRecipeTemplatePath);
@@ -77,13 +77,12 @@ abstract class AbstractProvider
 		}
 		catch (Exception ex) { throw new RuntimeException(ex); }
 	}
-	
+
 	void writeProviderAsJSON(int indentLevel, PrintWriter file)
 	{
-		String indstr = LoadGenerator.getIndentStrForLevel(indentLevel);
+		String indstr = lg.getIndentStrForLevel(indentLevel);
 
 		file.println(indstr + "\"name\": \"" + thisname + "\",");
 		file.println(indstr + "\"providerName\": \"" + providerName() + "\",");
 	}
 }
-

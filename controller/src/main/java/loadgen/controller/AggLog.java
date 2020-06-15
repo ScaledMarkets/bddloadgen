@@ -1,7 +1,7 @@
 package loadgen.controller;
 
 
-import loadgen.*;
+
 import loadgen.controller.templates.SupportedProviders;
 import java.io.*;
 import java.net.*;
