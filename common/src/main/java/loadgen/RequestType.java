@@ -1,4 +1,4 @@
-package loadgen.controller;
+package loadgen;
 
 
 
@@ -19,12 +19,12 @@ import java.awt.Color;
 	test accordingly - including verification of the response. */
 public class RequestType
 {
-	protected LoadGenerator lg;
+	protected AbstractLoadGenerator lg;
 	private String thisname;
 	private List<String> taglist = new Vector<String>();
 	private String thiscolor;
 
-	RequestType(LoadGenerator lg, String name, Consumer<RequestType> block)
+	RequestType(AbstractLoadGenerator lg, String name, Consumer<RequestType> block)
 	{
 		this.lg = lg;
 		lg.validateName(name, "Request type");

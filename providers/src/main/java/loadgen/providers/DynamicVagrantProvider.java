@@ -14,19 +14,37 @@ import java.nio.file.Files;
 
 
 /** For providers that can perform vagrant up. */
-public class VagrantProvider extends AbstractProvider
+public class DynamicVagrantProvider extends AbstractProvider
 {
 	private String thisProviderBoxName;
 	private String thisProviderBoxURL;
 	private String thisVagrantfileTemplatePath;
 	private String thisVagrantUserid;
 
-	VagrantProvider(LoadGenerator lg, String confname, Consumer<VagrantProvider> block)
+	public DynamicVagrantProvider(LoadGenerator lg, String confname, Consumer<VagrantProvider> block)
 	{
 		super(lg, confname);
 
 		if (block != null) block.accept(this);
 	}
+
+	public String getName() { return thisName; }
+
+	public Set<String> nodeIps() {
+
+	}
+
+	public Set<Integer> nodePorts() {
+
+	}
+
+	public void createNodes() throws Exception {
+
+	}
+
+
+
+
 
 	boolean isDynamic()
 	{

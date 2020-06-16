@@ -1,8 +1,7 @@
-package loadgen.controller;
+package loadgen;
 
 
 
-import loadgen.controller.templates.SupportedProviders;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -21,13 +20,13 @@ import java.nio.file.Files;
 	at 0. */
 public class Distribution
 {
-	private LoadGenerator lg;
+	private AbstractLoadGenerator lg;
 	private String thisname;
 	private String thistype;
 	private List<double[]> thislevels = new Vector<double[]>();
 
 	/** The allowed value for 'type' is 'ramp'. */
-	Distribution(LoadGenerator lg, String name, Consumer<Distribution> block)
+	public Distribution(AbstractLoadGenerator lg, String name, Consumer<Distribution> block)
 	{
 		this.lg = lg;
 		lg.validateName(name, "Distribution");

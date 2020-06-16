@@ -1,5 +1,10 @@
 package loadgen;
 
+import loadgen.profile.PerformanceProfile;
+import loadgen.profile.FunctionalProfile;
+import loadgen.profile.RequestType;
+
+import java.util.function.Consumer;
 
 
 /** Main entry point for the test controller of the LoadGeneration framework.
@@ -41,15 +46,19 @@ public interface AbstractLoadGenerator
 	String getResultsDirectory();
 
 
+	/** Define a configuration for a specified provider. */
+	public AbstractProvider provider(String name, String providerClassName,
+		Consumer<AbstractProvider> block);
+
 	/** Define a configuration for a dynamic provider. Dynamic providers support the dynamic
 		creation of test client nodes. */
-	public VagrantProvider vagrantProvider(String name, Consumer<VagrantProvider> block);
+	//public VagrantProvider vagrantProvider(String name, Consumer<VagrantProvider> block);
 
 
 	/** Define a configuration for a provider. Static providers do NOT support the dynamic
 		creation of test client nodes: the test client nodes must be manually
 		provisioned before tests are conducted. */
-	public StaticProvider staticProvider(String name, Consumer<StaticProvider> block);
+	//public StaticProvider staticProvider(String name, Consumer<StaticProvider> block);
 
 
 	/** Test results will be placed in here. A subdirectory will be created

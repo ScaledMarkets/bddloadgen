@@ -1,4 +1,4 @@
-package loadgen.controller;
+package loadgen;
 
 
 import loadgen.TestRunnerConstants;
@@ -12,7 +12,7 @@ import java.util.*;
 import java.nio.file.Files;
 
 
-/** Represents a provisioned node (virtual machine) for testing.
+/** Represents a provisioned node (virtual machine or container) for testing.
 	Nodes are created automatically - the methods below are not called by user
 	written code. */
 class Node

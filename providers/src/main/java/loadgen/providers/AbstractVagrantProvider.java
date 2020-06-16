@@ -9,8 +9,8 @@ import java.util.*;
 import java.nio.file.Files;
 
 
-/** Describe an infrastructure provider (e.g., aws, virtualbox, etc.). */
-abstract class AbstractProvider
+/** Describe an infrastructure provider (e.g., aws, virtualbox, docker, etc.). */
+public abstract class AbstractVagrantProvider
 {
 	protected AbstractLoadGenerator lg;
 	protected String thisname;
@@ -18,7 +18,7 @@ abstract class AbstractProvider
 	protected String thisRecipeTemplatePath;
 
 
-	AbstractProvider(AbstractLoadGenerator lg, String confname)
+	public AbstractVagrantProvider(AbstractLoadGenerator lg, String confname)
 	{
 		this.lg = lg;
 		lg.validateName(confname, "Provider configuration");

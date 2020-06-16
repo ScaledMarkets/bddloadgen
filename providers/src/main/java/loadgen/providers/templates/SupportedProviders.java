@@ -1,4 +1,4 @@
-package loadgen.controller.templates;
+package loadgen.providers.templates;
 
 
 import java.io.File;

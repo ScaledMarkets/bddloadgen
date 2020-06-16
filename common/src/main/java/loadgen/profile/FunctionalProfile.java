@@ -1,16 +1,11 @@
-package loadgen;
+package loadgen.profile;
 
 
 
-import loadgen.controller.templates.SupportedProviders;
-import java.io.File;
 import java.io.PrintWriter;
-import java.io.IOException;
-import java.net.InetAddress;
 import java.util.jar.*;
 import java.util.function.*;
 import java.util.*;
-import java.nio.file.Files;
 
 
 public class FunctionalProfile extends AbstractProfile

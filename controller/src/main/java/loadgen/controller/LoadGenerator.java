@@ -107,6 +107,13 @@ public class LoadGenerator implements AbstractLoadGenerator
 	}
 
 
+	/** Define a configuration for a specified provider. */
+	public AbstractProvider provider(String name, String providerClassName,
+		Consumer<AbstractProvider> block)
+	{
+		....
+	}
+
 	/** Define a configuration for a dynamic provider. Dynamic providers support the dynamic
 		creation of test client nodes. */
 	public VagrantProvider VagrantProvider(String name, Consumer<VagrantProvider> block)

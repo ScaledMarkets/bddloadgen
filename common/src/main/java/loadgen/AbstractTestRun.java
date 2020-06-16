@@ -1,4 +1,4 @@
-package loadgen.controller;
+package loadgen;
 
 import loadgen.TestRunnerConstants;
 
@@ -14,7 +14,7 @@ import java.util.*;
 	Abstract base class for all test runs. */
 abstract class AbstractTestRun
 {
-	private LoadGenerator lg;
+	private AbstractLoadGenerator lg;
 	private String thisName;
 	private String thisHostname;
 	private String thisTimestamp;
@@ -48,7 +48,7 @@ abstract class AbstractTestRun
 	private AggLog thisAggLog;
 
 
-	AbstractTestRun(LoadGenerator lg, String name)
+	AbstractTestRun(AbstractLoadGenerator lg, String name)
 	{
 		this.lg = lg;
 		lg.validateName(name, "Test run");

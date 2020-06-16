@@ -10,7 +10,7 @@ import java.util.*;
 
 
 /** For a provider that provisions boxes ahead of time. */
-public class StaticProvider extends AbstractProvider
+public class StaticVagrantProvider extends AbstractProvider
 {
 	private Map<String, String> thisNodeIps = new HashMap<String, String>();
 	private String thisUserid;
@@ -21,6 +21,19 @@ public class StaticProvider extends AbstractProvider
 		super(lg, confname);
 		if (block != null) block.accept(this);
 	}
+
+	public String getName() { return thisName; }
+
+	public Set<String> nodeIps() {
+
+	}
+
+	public Set<Integer> nodePorts() {
+
+	}
+
+
+
 
 
 	boolean isDynamic()

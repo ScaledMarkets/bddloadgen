@@ -1,6 +1,6 @@
 package loadgen.profile;
 
-
+import loadgen.AbstractLoadGenerator;
 
 import java.io.*;
 import java.net.*;
