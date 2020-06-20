@@ -36,6 +36,18 @@ public class LoadGenerator implements AbstractLoadGenerator
 	private ResultsJSONDatabaseConfig resultsDatabaseConfig;
 
 
+	/** Start each test run that has been defined. */
+	public void start()
+	{
+		for (String trName : testRuns.keySet())
+		{
+			AbstractTestRun tr = testRuns.get(trName);
+			System.out.println("About to run " + trName + ":");
+			tr.start();
+		}
+	}
+
+
 	public void setJBehaveJarURL(String url) { thisJBehaveJarURL = url; }
 
 	public void setLoadgenJarURL(String url) { thisLoadgenJarURL = url; }
@@ -116,7 +128,7 @@ public class LoadGenerator implements AbstractLoadGenerator
 
 	/** Define a configuration for a dynamic provider. Dynamic providers support the dynamic
 		creation of test client nodes. */
-	public VagrantProvider VagrantProvider(String name, Consumer<VagrantProvider> block)
+	public VagrantProvider vagrantProvider(String name, Consumer<VagrantProvider> block)
 	{
 		VagrantProvider p = new VagrantProvider(name, block);
 		providerConfigs.put(name, p);
@@ -165,18 +177,6 @@ public class LoadGenerator implements AbstractLoadGenerator
 		FunctionalRun f = new FunctionalRun(name, block);
 		testRuns.put(name, f);
 		return f;
-	}
-
-
-	/** Start each test run that has been defined. */
-	public void start()
-	{
-		for (String trName : testRuns.keySet())
-		{
-			AbstractTestRun tr = testRuns.get(trName);
-			System.out.println("About to run " + trName + ":");
-			tr.start();
-		}
 	}
 
 

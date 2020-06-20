@@ -57,6 +57,41 @@ abstract class AbstractTestRun
 		thisTimestamp = (new Date()).toString();
 	}
 
+	/** Initiate this AbstractTestRun.
+		This will determine all derived configuration parameters, set up the testing nodes,
+		and start the tests.
+		If the 'async' option is specified, perform as a sub-process, so that this
+		method does not block and allows other test runs to be defined and started. */
+	public void start (String... options)
+	{
+		try
+		{
+			// Create the results directory.
+			File f = new File(resultsDirectory());
+			if (! f.exists()) f.mkdirs();
+
+			if ((options != null) && (options[0] != null) && (options[0].equals("async")))
+			{
+				System.out.println("async");
+				new Thread( new Runnable() { public void run() { perform(); } } );
+			}
+			else
+			{
+				System.out.println("not async");
+				perform();
+			}
+		}
+		catch (Exception exception)
+		{
+			exception.printStackTrace(System.err);
+			throw new RuntimeException(exception);
+		}
+	}
+
+
+	abstract void perform();
+
+
 	abstract boolean isFunctional();
 
 	abstract boolean isPerformance();
@@ -406,41 +441,6 @@ abstract class AbstractTestRun
 	{
 		return thisRandomSeed;
 	}
-
-	/** Initiate this AbstractTestRun.
-		This will determine all derived configuration parameters, set up the testing nodes,
-		and start the tests.
-		If the 'async' option is specified, perform as a sub-process, so that this
-		method does not block and allows other test runs to be defined and started. */
-	public void start (String... options)
-	{
-		try
-		{
-			// Create the results directory.
-			File f = new File(resultsDirectory());
-			if (! f.exists()) f.mkdirs();
-
-			if ((options != null) && (options[0] != null) && (options[0].equals("async")))
-			{
-				System.out.println("async");
-				new Thread( new Runnable() { public void run() { perform(); } } );
-			}
-			else
-			{
-				System.out.println("not async");
-				perform();
-			}
-		}
-		catch (Exception exception)
-		{
-			exception.printStackTrace(System.err);
-			throw new RuntimeException(exception);
-		}
-	}
-
-
-	abstract void perform();
-
 
 	/** Create and provisions the nodes (VMs). The shell script that gets
 		put on each node (testrunner.sh) takes a parameter that specifies
