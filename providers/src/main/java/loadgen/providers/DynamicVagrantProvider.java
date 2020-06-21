@@ -14,7 +14,7 @@ import java.nio.file.Files;
 
 
 /** For providers that can perform vagrant up. */
-public class DynamicVagrantProvider extends AbstractProvider
+public class DynamicVagrantProvider extends AbstractVagrantProvider
 {
 	private String thisProviderBoxName;
 	private String thisProviderBoxURL;

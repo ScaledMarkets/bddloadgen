@@ -2,6 +2,7 @@ package loadgen.demo.controller;
 
 
 import loadgen.controller.*;
+import loadgen.providers.DynamicVagrantProvider;
 
 
 /** Demonstration JBehave script for performing a set of performance tests using
@@ -28,11 +29,13 @@ public class Demo
 	private double thisSpikeDuration;
 	private TestRun thisTestRun;
 
+	private LoadGenerator loadGenerator = new LoadGenerator(....);
+
 
 	@Given("^for scenario \"([^\"]*)\" that the system has ramped up to a load of \"([^\"]*)\" requests per second after \"([^\"]*)\" minutes and continues for \"([^\"]*)\" minutes$")
 	public void do_given(String scenarioName, double typReqRate, double typRampTime, double typDuration)
 	{
-		LoadGenerator.setTestMode();
+		loadGenerator.setTestMode();
 
 		thisScenarioName = scenarioName;
 		thisTypDuration = typDuration;
@@ -52,18 +55,18 @@ public class Demo
 		//LoadGenerator.resultsDatabaseConfig.setIndexName "temp1";
 		//LoadGenerator.resultsDatabaseConfig.setJsonDataType "temp1";
 
-		LoadGenerator.requestType("TypicalRequest", (rt) -> {
+		loadGenerator.requestType("TypicalRequest", (rt) -> {
 			rt.tag("+Performance");
 			rt.tag("+Tag2");
 			rt.setColor("darkblue");  // See http://www.december.com/html/spec/colorsvg.html
 		});
 
-		LoadGenerator.distribution("TypicalDistribution", (d) -> {
+		loadGenerator.distribution("TypicalDistribution", (d) -> {
 			d.level(typReqRate, typRampTime);  // ramp up to the request rate.
 			d.level(typReqRate, thisTypDuration);  // keep the base load going until the end of the test.
 		});
 
-		LoadGenerator.profile("TypicalProfile", (p) -> {
+		loadGenerator.profile("TypicalProfile", (p) -> {
 			p.setRequestType("TypicalRequest");
 			p.setDistribution("TypicalDistribution");
 		});
@@ -75,28 +78,28 @@ public class Demo
 	{
 		thisSpikeDuration = spikeDuration;
 
-		LoadGenerator.requestType("SpikeRequest", (rt) -> {
+		loadGenerator.requestType("SpikeRequest", (rt) -> {
 			rt.tag("@Performance");
 			rt.setColo("goldenrod");
 		});
 
-		LoadGenerator.distribution("SpikeDistribution", (d) -> {
+		loadGenerator.distribution("SpikeDistribution", (d) -> {
 			d.level(0.0, spikeDelay);
 			d.level(spikeReqRate, 0.01);
 			d.level(spikeReqRate, thisSpikeDuration);
 			d.level(0.0, 0.01);
 		});
 
-		LoadGenerator.profile("SpikeProfile", (p) -> {
+		loadGenerator.profile("SpikeProfile", (p) -> {
 			p.setRequestType("SpikeRequest");
 			p.setDistribution("SpikeDistribution");
 		}
 
-		LoadGenerator.ipPool("10.3.3.30", "10.3.3.31");
+		loadGenerator.ipPool("10.3.3.30", "10.3.3.31");
 
-		LoadGenerator.setResultsDirectory("~/temp/results");
+		loadGenerator.setResultsDirectory("~/temp/results");
 
-		LoadGenerator.VagrantProvider("vbconf", (p) -> {
+		loadGenerator.dynamicVagrantProvider("vbconf", (p) -> {
 			p.setProviderName("virtualbox");
 			p.setProviderBoxName("opscode-centos-6.3");
 			p.setProviderBoxURL(ProviderBoxURL);
@@ -104,7 +107,7 @@ public class Demo
 			//setChefRecipeTemplatePath ...
 		}
 
-		thisTestRun = LoadGenerator.performanceRun(thisScenarioName, (pr) -> {
+		thisTestRun = loadGenerator.performanceRun(thisScenarioName, (pr) -> {
 
 			pr.defineEnvVariable("TARGET_URL", thisTargetIpAddr);
 

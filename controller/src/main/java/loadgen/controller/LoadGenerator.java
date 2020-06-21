@@ -128,9 +128,9 @@ public class LoadGenerator implements AbstractLoadGenerator
 
 	/** Define a configuration for a dynamic provider. Dynamic providers support the dynamic
 		creation of test client nodes. */
-	public VagrantProvider vagrantProvider(String name, Consumer<VagrantProvider> block)
+	public DynamicVagrantProvider dynamicVagrantProvider(String name, Consumer<DynamicVagrantProvider> block)
 	{
-		VagrantProvider p = new VagrantProvider(name, block);
+		DynamicVagrantProvider p = new DynamicVagrantProvider(name, block);
 		providerConfigs.put(name, p);
 		return p;
 	}
@@ -139,9 +139,9 @@ public class LoadGenerator implements AbstractLoadGenerator
 	/** Define a configuration for a provider. Static providers do NOT support the dynamic
 		creation of test client nodes: the test client nodes must be manually
 		provisioned before tests are conducted. */
-	public StaticProvider staticProvider(String name, Consumer<StaticProvider> block)
+	public StaticVagrantProvider staticVagrantProvider(String name, Consumer<StaticVagrantProvider> block)
 	{
-		StaticProvider p = new StaticProvider(name, block);
+		StaticVagrantProvider p = new StaticProvider(name, block);
 		providerConfigs.put(name, p);
 		return p;
 	}
