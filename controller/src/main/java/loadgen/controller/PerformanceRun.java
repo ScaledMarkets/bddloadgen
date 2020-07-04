@@ -11,7 +11,10 @@ import java.awt.Color;
 
 
 /** A test run that manages a large numbre of tests, such that the tests are performed
-	many times aross the set of available nodes, according to a load profile. */
+many times aross the set of available nodes, according to a load profile.
+Once the run has completed, its methods may be called to obtain the results,
+graph the results, etc.
+*/
 public class PerformanceRun extends AbstractTestRun
 {
 	private boolean thisGraphAllEvents = false;
@@ -45,11 +48,11 @@ public class PerformanceRun extends AbstractTestRun
 		return "Performance";
 	}
 
-	/** Create a graph (in SVG format) of the results, for the specified event
-		type. Event types are defined in the cucumber tests by calling the
-		'timelogBegin' and 'timelogEnd' methods in the utility class 'TestRunnerConstants'.
-		Note that the 'EndToEnd' and 'WholeTest' events are always graphed (see
-		TestRunnerConstants for explanations of these event types). */
+	/** Specify that a graph (in SVG format) of the results should be created for
+	the specified event type. Event types are defined in the cucumber tests by calling the
+	'timelogBegin' and 'timelogEnd' methods in the utility class 'TestRunnerConstants'.
+	Note that the 'EndToEnd' and 'WholeTest' events are always graphed (see
+	TestRunnerConstants for explanations of these event types). */
 	public void graphEvent(String eventTypeName, String color)
 	{
 		graphEvents().add(eventTypeName);
@@ -234,8 +237,8 @@ public class PerformanceRun extends AbstractTestRun
 	// Implementation methods================================================
 
 
-	/** Execute the test run in the current proces. This method is invoked
-		by the start method. */
+	/** Execute this test run in the current proces. This method is invoked
+	by the start method. */
 	void perform()
 	{
 		System.out.println("Performing Performance Run " + name());

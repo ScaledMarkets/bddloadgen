@@ -1,6 +1,7 @@
-package loadgen;
+package loadgen.controller;
 
 import loadgen.TestRunnerConstants;
+import loadgen.provider.Provider;
 
 import java.io.*;
 import java.net.*;
@@ -58,11 +59,13 @@ abstract class AbstractTestRun
 	}
 
 	/** Initiate this AbstractTestRun.
-		This will determine all derived configuration parameters, set up the testing nodes,
-		and start the tests.
-		If the 'async' option is specified, perform as a sub-process, so that this
-		method does not block and allows other test runs to be defined and started. */
-	public void start (String... options)
+	This will determine all derived configuration parameters, set up the testing nodes,
+	and start the tests.
+	If the 'async' option is specified, perform as a separate thread, so that this
+	method does not block while nodes are being provisioned, and allows other test runs
+	to be defined and started with maximum simultaneity.
+	*/
+	public void start(String... options)
 	{
 		try
 		{
@@ -88,7 +91,12 @@ abstract class AbstractTestRun
 		}
 	}
 
-
+	/**
+	Provision the required test nodes for a test run, and being the test run.
+	This is called by start() after the configuration has been fully elaborated.
+	Note that LoadGenerator allows one to define multiple test runs in parallel:
+	A test run instance is created for each.
+	*/
 	abstract void perform();
 
 
@@ -418,7 +426,7 @@ abstract class AbstractTestRun
 		new Node's IP address. */
 	Node createNode(String nodeName, long randomSeed, String ip)
 	{
-		Node node = new Node(nodeName, this);
+		Node node = ....new Node(nodeName, this); <-- no: should delegate this to the provider
 		nodes().add(node);
 		try {
 			node.provision(randomSeed, ip);  // For a dynamic provider, the VM is also created.
@@ -442,19 +450,18 @@ abstract class AbstractTestRun
 		return thisRandomSeed;
 	}
 
-	/** Create and provisions the nodes (VMs). The shell script that gets
-		put on each node (testrunner.sh) takes a parameter that specifies
-		the cucumber tags to use. */
-	void provisionNodes()
+	/** Create and provisions the load generation nodes (VMs or containers). The shell script
+	that gets put on each node (testrunner.sh) takes a parameter that specifies
+	the cucumber tags to use. */
+	void provisionNodes() .... <-- delegate to the provider
 	{
-		AbstractProvider prov = getProvider();
+		Provider prov = getProvider();
 		Random random = new java.util.Random(thisRandomSeed);
 		if (prov.isDynamic())
 		{
 			// Create and provision the number of nodes specified by noOfNodes.
 			int n = noOfNodes();
-			if (n == 0) throw new RuntimeException(
-				"noOfNodes is zero: no nodes to be created!");
+			if (n == 0) throw new RuntimeException("noOfNodes is zero: no nodes to be created!");
 			String[] ips = lg.getIps();  // may be null
 			if ((ips != null) && (n > ips.length)) throw new RuntimeException(
 				"Insufficient IP addresses in the ipPool");

@@ -15,7 +15,7 @@ import java.nio.file.Files;
 /** Represents a provisioned node (virtual machine or container) for testing.
 	Nodes are created automatically - the methods below are not called by user
 	written code. */
-class Node
+class VagrantNode
 {
 	private LoadGenerator lg;
 	private String thisName;
